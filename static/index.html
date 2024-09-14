@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herb Goddess</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background-color: #1a0033;
+            color: #e6ccff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .chat-container {
+            width: 90%;
+            max-width: 1200px;
+            background-color: #330066;
+            border-radius: 15px;
+            box-shadow: 0 0 20px #8c1aff;
+            padding: 30px;
+        }
+        .chat-header {
+            font-family: 'Cinzel', serif;
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #8c1aff;
+        }
+        .chat-messages {
+            height: 600px;
+            overflow-y: auto;
+            border: 1px solid #8c1aff;
+            padding: 20px;
+            margin-bottom: 30px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .messages-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .user-message, .bot-message {
+            padding: 10px 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background-color: #4d0099;
+            align-self: flex-end;
+            border-bottom-right-radius: 0;
+        }
+        .bot-message {
+            background-color: #660099;
+            border-left: 4px solid #8c1aff;
+            align-self: flex-start;
+            border-bottom-left-radius: 0;
+        }
+        .chat-input {
+            display: flex;
+        }
+        #user-input {
+            flex-grow: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background-color: #e6ccff;
+            color: #1a0033;
+            font-size: 18px;
+        }
+        #send-button {
+            padding: 15px 30px;
+            background-color: #8c1aff;
+            color: #e6ccff;
+            border: none;
+            border-radius: 10px;
+            margin-left: 15px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        /* Styles for Markdown content */
+        .bot-message ul, .bot-message ol {
+            padding-left: 20px;
+        }
+        .bot-message p {
+            margin: 5px 0;
+        }
+        .bot-message h1, .bot-message h2, .bot-message h3, .bot-message h4, .bot-message h5, .bot-message h6 {
+            margin: 10px 0;
+            color: #ffccff;
+        }
+        .bot-message code {
+            background-color: #4d0099;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .bot-message pre {
+            background-color: #4d0099;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .bot-message blockquote {
+            border-left: 3px solid #8c1aff;
+            margin: 10px 0;
+            padding-left: 10px;
+            font-style: italic;
+            color: #ffccff;
+        }
+        .thinking {
+            width: 60px;
+            height: 60px;
+            align-self: center;
+            margin-top: 10px;
+            display: none;
+
+        }
+        .potion {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #8c1aff, #660099, #4d0099);
+            border-radius: 50%;
+            animation: swirl 3s linear infinite, glow 2s ease-in-out infinite alternate;
+            box-shadow: 0 0 10px #8c1aff;
+        }
+        .bubble {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: rise 3s infinite ease-in-out;
+        }
+        .bubble:nth-child(1) {
+            width: 10px;
+            height: 10px;
+            left: 20%;
+            animation-delay: 0s;
+        }
+        .bubble:nth-child(2) {
+            width: 8px;
+            height: 8px;
+            left: 50%;
+            animation-delay: 0.5s;
+        }
+        .bubble:nth-child(3) {
+            width: 12px;
+            height: 12px;
+            left: 80%;
+            animation-delay: 1s;
+        }
+        @keyframes swirl {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px #8c1aff; }
+            100% { box-shadow: 0 0 20px #8c1aff; }
+        }
+        @keyframes rise {
+            0% { bottom: -10px; opacity: 0; }
+            50% { opacity: 1; }
+            100% { bottom: 60px; opacity: 0; }
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">🔮Herb Goddess🧙‍♀️</div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="messages-content" id="messages-content"></div>
+            <div class="thinking" id="thinking-animation">
+                <div class="potion">
+                    <div class="bubble"></div>
+                    <div class="bubble"></div>
+                    <div class="bubble"></div>
+                </div>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Cast your message...">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('messages-content');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const thinkingAnimation = document.querySelector('.thinking'); // Add this line
+
+        function addMessage(message, isUser) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add(isUser ? 'user-message' : 'bot-message');
+            
+            if (isUser) {
+                messageElement.textContent = message;
+            } else {
+                messageElement.innerHTML = marked.parse(message);
+            }
+            
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        function showThinkingAnimation() {
+            thinkingAnimation.style.display = 'block'; // Change 'flex' to 'block'
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        function hideThinkingAnimation() {
+            thinkingAnimation.style.display = 'none';
+        }
+
+        async function initializeChat() {
+            try {
+                showThinkingAnimation();
+                const response = await fetch('/init');
+                const data = await response.json();
+                hideThinkingAnimation();
+                addMessage(data.response, false);
+                
+            } catch (error) {
+                console.error('Initialization Error:', error);
+                hideThinkingAnimation();
+                addMessage('Failed to initialize chat. Please refresh the page.', false);
+                
+            }
+        }
+
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (message) {
+                addMessage(message, true);
+                userInput.value = '';
+                showThinkingAnimation();
+                try {
+                    const response = await fetch('/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ message }),
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    hideThinkingAnimation();
+                    addMessage(data.response, false);
+                    
+                    if (data.terminate) {
+                        userInput.disabled = true;
+                        sendButton.disabled = true;
+                    }
+                } catch (error) {
+                    hideThinkingAnimation();
+                    console.error('Chat Error:', error);
+                    addMessage(`Error: ${error.message}. Please try again.`, false);
+                }
+            }
+        }
+
+        sendButton.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Initialize chat when the page loads
+        window.addEventListener('load', initializeChat);
+    </script>
+</body>
+</html>
