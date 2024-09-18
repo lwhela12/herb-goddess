@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from oracle import GeminiOracle
+import time
 
 app = Flask(__name__, static_folder='static')
 CORS(app)  # This allows your frontend to make requests to this server
@@ -13,6 +14,7 @@ def index():
 
 @app.route('/init', methods=['GET'])
 def init():
+    time.sleep(0.3) 
     return jsonify({
         'response': f"Welcome! I'm {oracle.name}. I am here to provide whatever solutions you may need. What do you desire?",
         'terminate': False
