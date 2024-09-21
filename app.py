@@ -1,10 +1,10 @@
+import os
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from oracle import GeminiOracle
-import time
 
 app = Flask(__name__, static_folder='static')
-CORS(app)  # This allows your frontend to make requests to this server
+CORS(app)
 
 oracle = GeminiOracle()  # Global instance
 
@@ -14,7 +14,6 @@ def index():
 
 @app.route('/init', methods=['GET'])
 def init():
-    time.sleep(0.3) 
     return jsonify({
         'response': f"Welcome! I'm {oracle.name}. I am here to provide whatever solutions you may need. What do you desire?",
         'terminate': False
@@ -33,8 +32,8 @@ def chat():
     return jsonify({'response': response, 'terminate': False})
 
 if __name__ == '__main__':
-    app.run(debug=True) 
-
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
 
 
 
