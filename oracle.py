@@ -1,7 +1,7 @@
 import google.generativeai as genai
 from dotenv import load_dotenv
 import os
-from IPython.display import display, Markdown
+# from IPython.display import display, Markdown
 
 
 
