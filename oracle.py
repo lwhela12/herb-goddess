@@ -1,6 +1,7 @@
 import google.generativeai as genai
 from dotenv import load_dotenv
 import os
+from google.generativeai.types import HarmCategory, HarmBlockThreshold
 # from IPython.display import display, Markdown
 
 
@@ -14,7 +15,7 @@ class GeminiOracle:
     def __init__(self):
         self.name = "Herb Goddess"
         genai.configure(api_key=GOOGLE_API_KEY)
-        self.model = genai.GenerativeModel(model_name="gemini-1.5-flash-exp-0827")
+        self.model = genai.GenerativeModel(model_name="gemini-1.5-flash-exp-0827", safety_settings={HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT:HarmBlockThreshold.BLOCK_NONE})
         self.chat = self.model.start_chat(history=[])
         self.initialize_assistant()
 
